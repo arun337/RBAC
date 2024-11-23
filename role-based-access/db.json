@@ -87,6 +87,16 @@
       "profilePhoto": "",
       "role": "user",
       "status": "active"
+    },
+    {
+      "id": "7c4b",
+      "username": "Arun",
+      "password": "123456789",
+      "email": "aru@gmail.com",
+      "phone": "1234567890",
+      "profilePhoto": "",
+      "role": "user",
+      "status": "active"
     }
   ],
   "roles": [
