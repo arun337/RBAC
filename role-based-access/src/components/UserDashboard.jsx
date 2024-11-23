@@ -90,37 +90,37 @@ const UserDashboard = ({ currentUser, onLogout }) => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <nav className="bg-white border-b border-gray-200 p-4 shadow-sm">
+      <nav className="bg-blue-600 text-white p-4">
         <div className="container mx-auto flex justify-between items-center">
           <h1 className="text-xl font-bold">User Dashboard</h1>
           <div className="flex items-center">
             <span className="mr-4">Welcome, {userDetails.username}!</span>
             <button
-              className={`py-2 px-4 rounded-full transition-colors duration-300 ${activeTab === 'home' ? 'bg-blue-500 text-white' : 'bg-transparent hover:bg-gray-200'} hover:text-black`}
+              className={`py-2 px-4 ${activeTab === 'home' ? 'text-gray-300' : 'text-white'} hover:text-gray-300`}
               onClick={() => setActiveTab('home')}
             >
               Home
             </button>
             <button
-              className={`py-2 px-4 rounded-full transition-colors duration-300 ${activeTab === 'profile' ? 'bg-blue-500 text-white' : 'bg-transparent hover:bg-gray-200'} hover:text-black`}
+              className={`py-2 px-4 ${activeTab === 'profile' ? 'text-gray-300' : 'text-white'} hover:text-gray-300`}
               onClick={() => setActiveTab('profile')}
             >
               Profile
             </button>
-            <button onClick={handleLogout} className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full ml-4 transition-colors duration-300">
+            <button onClick={handleLogout} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-4">
               Logout
             </button>
           </div>
         </div>
       </nav>
       <div className="p-8">
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-white rounded-lg shadow-lg p-6">
           {activeTab === 'home' && (
             <div>
-              <h3 className="text-xl font-semibold mb-4">Home Content</h3>
-              <table className="min-w-full bg-white rounded-lg shadow-sm">
+              <h3 className="text-xl font-bold mb-4">Home Content</h3>
+              <table className="min-w-full bg-white">
                 <thead>
-                  <tr className="bg-gray-100">
+                  <tr>
                     <th className="py-2">Profile</th>
                     <th className="py-2">Username</th>
                     <th className="py-2">Email</th>
@@ -130,7 +130,7 @@ const UserDashboard = ({ currentUser, onLogout }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr className="text-center hover:bg-gray-50 transition-colors duration-300">
+                  <tr className="text-center">
                     <td className="py-2">
                       {userDetails.profilePhoto ? (
                         <img
@@ -154,14 +154,14 @@ const UserDashboard = ({ currentUser, onLogout }) => {
           )}
           {activeTab === 'profile' && (
             <div className="flex flex-col items-center">
-              <h3 className="text-xl font-semibold mb-6">Edit Profile</h3>
+              <h3 className="text-2xl font-bold mb-6">Edit Profile</h3>
               <form className="w-full max-w-md">
                 <div className="mb-6 text-center">
                   {userDetails.profilePhoto ? (
                     <img
                       src={userDetails.profilePhoto}
                       alt={`${userDetails.username}'s profile`}
-                      className="w-24 h-24 rounded-full mx-auto mb-4 shadow-md"
+                      className="w-24 h-24 rounded-full mx-auto mb-4"
                     />
                   ) : (
                     <FaUserCircle size={96} className="text-gray-600 mx-auto mb-4" />
@@ -170,7 +170,7 @@ const UserDashboard = ({ currentUser, onLogout }) => {
                     type="file"
                     accept="image/*"
                     onChange={handleFileChange}
-                    className="w-full px-3 py-2 border rounded-lg shadow-sm"
+                    className="w-full px-3 py-2 border rounded"
                   />
                 </div>
                 <div className="mb-4">
@@ -180,7 +180,7 @@ const UserDashboard = ({ currentUser, onLogout }) => {
                     name="username"
                     value={userDetails.username}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+                    className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-600"
                   />
                 </div>
                 <div className="mb-4">
@@ -190,7 +190,7 @@ const UserDashboard = ({ currentUser, onLogout }) => {
                     name="email"
                     value={userDetails.email}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+                    className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-600"
                   />
                 </div>
                 <div className="mb-4">
@@ -200,13 +200,13 @@ const UserDashboard = ({ currentUser, onLogout }) => {
                     name="phone"
                     value={userDetails.phone}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+                    className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-600"
                   />
                 </div>
                 <button
                   type="button"
                   onClick={handleProfileUpdate}
-                  className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full mt-4 transition-colors duration-300 shadow-md"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
                 >
                   Update Profile
                 </button>
