@@ -9,10 +9,44 @@ const Login = ({ setUser }) => {
   const [phone, setPhone] = useState("");
   const [photo, setPhoto] = useState("");
   const [isRegistering, setIsRegistering] = useState(false);
+  const [errors, setErrors] = useState({ name: "", password: "" });
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    let messages = {};
+    
+    if (!name) {
+      messages.name = "Name is required.";
+    }
+    
+    if (isRegistering) {
+      if (!email) {
+        messages.email = "Email is required.";
+      } else if (!/\S+@\S+\.\S+/.test(email)) {
+        messages.email = "Email is not valid.";
+      }
+      if (!phone) {
+        messages.phone = "Phone number is required.";
+      } else if (!/^\d{10}$/.test(phone)) {
+        messages.phone = "Phone number must be 10 digits.";
+      }
+      if (!password) {
+        messages.password = "Password is required.";
+      } else if (password.length < 8) {
+        messages.password = "Password must be at least 8 characters.";
+      }
+    } else {
+      if (!password) {
+        messages.password = "Password is required.";
+      }
+    }
+    
+    if (Object.keys(messages).length > 0) {
+      setErrors(messages);
+      return;
+    }
+    
     if (isRegistering) {
       // Check if all registration fields are filled
       if (!name || !email || !phone || !password) {
@@ -28,19 +62,19 @@ const Login = ({ setUser }) => {
     } else {
       // Check if login fields are filled
       if (!name || !password) {
-        alert("Please fill in both fields.");
+        setErrors({ ...errors, form: "Please fill in both fields." });
         return;
       }
-      const userRole = await fetchUserRole(name, password);
-      if (userRole) {
-        setUser({ username: name, role: userRole });
-        if (userRole === "admin") {
+      const result = await fetchUserRole(name, password);
+      if (result.role) {
+        setUser({ username: name, role: result.role });
+        if (result.role === "admin") {
           navigate("/dashboard");
         } else {
           navigate("/user-dashboard");
         }
       } else {
-        alert("Invalid credentials.");
+        setErrors({ ...errors, form: result.error });
       }
     }
     setPassword(""); // Reset password field
@@ -49,8 +83,17 @@ const Login = ({ setUser }) => {
   const fetchUserRole = async (username, password) => {
     const response = await fetch("http://localhost:3001/users");
     const users = await response.json();
-    const user = users.find(u => u.username === username && u.password === password);
-    return user ? user.role : null;
+    const user = users.find(u => u.username === username);
+
+    if (!user) {
+      return { error: "Username does not exist." };
+    }
+
+    if (user.password !== password) {
+      return { error: "Password does not match." };
+    }
+
+    return { role: user.role };
   };
 
   const registerUser = async (name, password, email, phone, photo) => {
@@ -124,10 +167,14 @@ const Login = ({ setUser }) => {
                   type="text"
                   id="name"
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  onChange={(e) => {
+                    setName(e.target.value);
+                    setErrors({ ...errors, name: "" }); // Clear error on change
+                  }}
                   className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
+                {errors.name && <span className="text-red-500 text-sm">{errors.name}</span>}
               </div>
               <div className="space-y-1">
                 <label htmlFor="email" className="block text-sm font-medium text-gray-600">
@@ -137,10 +184,14 @@ const Login = ({ setUser }) => {
                   type="email"
                   id="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    setErrors({ ...errors, email: "" }); // Clear error on change
+                  }}
                   className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
+                {errors.email && <span className="text-red-500 text-sm">{errors.email}</span>}
               </div>
               <div className="space-y-1">
                 <label htmlFor="phone" className="block text-sm font-medium text-gray-600">
@@ -150,10 +201,14 @@ const Login = ({ setUser }) => {
                   type="tel"
                   id="phone"
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  onChange={(e) => {
+                    setPhone(e.target.value);
+                    setErrors({ ...errors, phone: "" }); // Clear error on change
+                  }}
                   className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
+                {errors.phone && <span className="text-red-500 text-sm">{errors.phone}</span>}
               </div>
               <div className="space-y-1">
                 <label htmlFor="photo" className="block text-sm font-medium text-gray-600">
@@ -174,10 +229,14 @@ const Login = ({ setUser }) => {
                   type="password"
                   id="password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    setErrors({ ...errors, password: "" }); // Clear error on change
+                  }}
                   className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
+                {errors.password && <span className="text-red-500 text-sm">{errors.password}</span>}
               </div>
               <button
                 type="submit"
@@ -197,10 +256,14 @@ const Login = ({ setUser }) => {
                   type="text"
                   id="name"
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  onChange={(e) => {
+                    setName(e.target.value);
+                    setErrors({ ...errors, name: "" }); // Clear error on change
+                  }}
                   className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
+                {errors.name && <span className="text-red-500 text-sm">{errors.name}</span>}
               </div>
               <div className="space-y-1">
                 <label htmlFor="password" className="block text-sm font-medium text-gray-600">
@@ -210,10 +273,14 @@ const Login = ({ setUser }) => {
                   type="password"
                   id="password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    setErrors({ ...errors, password: "" }); // Clear error on change
+                  }}
                   className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
+                {errors.password && <span className="text-red-500 text-sm">{errors.password}</span>}
               </div>
               <button
                 type="submit"
@@ -221,6 +288,7 @@ const Login = ({ setUser }) => {
               >
                 Login
               </button>
+              {errors.form && <span className="text-red-500 text-sm">{errors.form}</span>}
             </>
           )}
         </form>
