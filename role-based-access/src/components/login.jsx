@@ -16,6 +16,17 @@ const Login = ({ setUser }) => {
     e.preventDefault();
     let messages = {};
     
+    if (isRegistering) {
+     
+        const response = await fetch("http://localhost:3001/users");
+        const users = await response.json();
+        const isNameTaken = users.some(u => u.username === name);
+        if (isNameTaken) {
+          messages.name = "This name is already registered. Please choose another.";
+        }
+      
+    }
+    
     if (!name) {
       messages.name = "Name is required.";
     }
