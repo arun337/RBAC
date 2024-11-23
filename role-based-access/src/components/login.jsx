@@ -147,11 +147,13 @@ const Login = ({ setUser }) => {
   };
 
   const resetFields = () => {
+    console.log("Resetting fields");
     setName("");
     setEmail("");
     setPhone("");
     setPhoto("");
     setPassword("");
+    setErrors({ name: "", password: "", email: "", phone: "", form: "" }); // Reset errors as well
   };
 
   const handleFileChange = (e) => {
@@ -209,7 +211,7 @@ const Login = ({ setUser }) => {
                   Phone
                 </label>
                 <input
-                  type="tel"
+                  type="number"
                   id="phone"
                   value={phone}
                   onChange={(e) => {
@@ -306,7 +308,7 @@ const Login = ({ setUser }) => {
         <button
           onClick={() => {
             setIsRegistering(!isRegistering);
-            resetFields(); // Reset all fields
+            resetFields(); // Reset all fields when toggling between login and registration
           }}
           className="w-full mt-3 text-blue-500 hover:underline"
         >

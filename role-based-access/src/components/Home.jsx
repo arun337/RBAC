@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {  FaEdit,FaTrash,FaUser  } from "react-icons/fa"; // Import FaEdit for the edit icon
+import {  FaEdit,FaTrash,FaUser,FaSearch  } from "react-icons/fa"; // Import FaEdit for the edit icon
 
 
 const Home = ({ user }) => {
@@ -16,6 +16,7 @@ const Home = ({ user }) => {
       age: ""
     });
     const [editingUser, setEditingUser] = useState(null);
+    const [searchQuery, setSearchQuery] = useState("");
   
     useEffect(() => {
       fetch("http://localhost:3001/users")
@@ -80,6 +81,18 @@ const Home = ({ user }) => {
     return (
       <div className="p-6 bg-white rounded-lg shadow-lg">
         <h2 className="text-2xl font-bold mb-4">Welcome {user.username.toUpperCase()} </h2>
+        
+        <div className="relative mb-4">
+          <input
+            type="text"
+            placeholder="Search by username"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="border p-2 pl-8 rounded-full w-96 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <FaSearch className="absolute left-3 top-3 text-gray-500" />
+        </div>
+  
         <table className="min-w-full bg-white">
           <thead>
             <tr>
@@ -93,7 +106,7 @@ const Home = ({ user }) => {
           </thead>
           <tbody>
             {users
-              .filter(user => user.role !== "admin")
+              .filter(user => user.role !== "admin" && user.username.toLowerCase().includes(searchQuery.toLowerCase()))
               .map(user => (
                 <tr key={user.id} className="text-center">
                   <td className="py-2">
