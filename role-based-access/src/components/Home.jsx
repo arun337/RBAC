@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaEdit, FaTrash, FaUser, FaUserShield, FaSearch } from "react-icons/fa";
+import { FaEdit, FaTrash, FaUser,  FaSearch } from "react-icons/fa";
 
 const Home = ({ user }) => {
     const [users, setUsers] = useState([]);
@@ -12,7 +12,7 @@ const Home = ({ user }) => {
       email: "",
       phone: "",
       profilePhoto: "",
-      age: ""
+      
     });
     const [editingUser, setEditingUser] = useState(null);
     const [searchQuery, setSearchQuery] = useState("");
@@ -44,17 +44,7 @@ const Home = ({ user }) => {
       }
     };
   
-    const addUser = () => {
-      const newUserId = (users.length + 1).toString();
-      fetch("http://localhost:3001/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...newUser, id: newUserId })
-      })
-      .then(response => response.json())
-      .then(user => setUsers([...users, user]))
-      .catch(error => console.error("Error adding user:", error));
-    };
+   
   
     const deleteUser = (id) => {
       fetch(`http://localhost:3001/users/${id}`, {
@@ -115,6 +105,7 @@ const Home = ({ user }) => {
               <th className="py-2">Email</th>
               <th className="py-2">Phone</th>
               <th className="py-2">Role</th>
+              <th className="py-2">Status</th>
               <th className="py-2">Actions</th>
             </tr>
           </thead>
@@ -140,6 +131,7 @@ const Home = ({ user }) => {
                       <FaUser className="text-blue-500 inline-block" />
                       <span className="ml-1">{user.role}</span>
                     </td>
+                    <td className="py-2">{user.status}</td>
                     <td className="py-2">
                       <button onClick={() => startEditing(user)} className="text-blue-500 mx-1">
                         <FaEdit />
@@ -151,12 +143,13 @@ const Home = ({ user }) => {
                   </tr>
                   {editingUser && editingUser.id === user.id && (
                     <tr>
-                      <td colSpan="6" className="p-4 bg-gray-100 rounded-lg">
+                      <td colSpan="7" className="p-4 bg-gray-100 rounded-lg">
                         <h3 className="text-lg font-bold mb-2">Edit User</h3>
                         <input
                           type="text"
                           value={editingUser.username}
                           onChange={(e) => setEditingUser({ ...editingUser, username: e.target.value })}
+                          placeholder="Enter username"
                           className="border p-2 rounded mb-2"
                         />
                         <select
@@ -172,23 +165,19 @@ const Home = ({ user }) => {
                           type="email"
                           value={editingUser.email}
                           onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })}
+                          placeholder="Enter email"
                           className="border p-2 rounded mb-2"
                         />
                         <input
                           type="text"
                           value={editingUser.phone}
                           onChange={(e) => setEditingUser({ ...editingUser, phone: e.target.value })}
+                          placeholder="Enter phone number"
                           className="border p-2 rounded mb-2"
                         />
                         <input
                           type="file"
                           onChange={(e) => handleFileChange(e, true)}
-                          className="border p-2 rounded mb-2"
-                        />
-                        <input
-                          type="number"
-                          value={editingUser.age}
-                          onChange={(e) => setEditingUser({ ...editingUser, age: e.target.value })}
                           className="border p-2 rounded mb-2"
                         />
                         <select

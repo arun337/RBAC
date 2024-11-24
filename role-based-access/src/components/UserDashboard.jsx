@@ -3,40 +3,26 @@ import React, { useEffect, useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-const UserDashboard = ({ currentUser, onLogout }) => {
+const UserDashboard = ({ onLogout }) => {
   const [userDetails, setUserDetails] = useState(null);
   const [error, setError] = useState(null);
-  const [activeTab, setActiveTab] = useState('home'); // State to track active tab
+  const [activeTab, setActiveTab] = useState('home');
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (currentUser) {
-      fetch(`http://localhost:3001/users?username=${currentUser.username}`)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-          return response.json();
-        })
-        .then(data => {
-          if (data.length > 0) {
-            setUserDetails(data[0]);
-          } else {
-            setError("User not found");
-          }
-        })
-        .catch(error => {
-          console.error("Error fetching user details:", error);
-          setError("Failed to load user details");
-        });
+    const storedUserDetails = localStorage.getItem('userDetails');
+    if (storedUserDetails) {
+      setUserDetails(JSON.parse(storedUserDetails));
     } else {
-      setError("No user is logged in");
+      setError("No user details found in local storage");
     }
-  }, [currentUser]);
+  }, []);
 
   const handleLogout = () => {
-    onLogout(); // Clear user state
-    navigate("/"); // Redirect to login page
+    onLogout();
+    localStorage.removeItem('userDetails');
+    localStorage.removeItem('currentUser');
+    navigate("/");
   };
 
   const handleInputChange = (e) => {

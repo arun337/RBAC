@@ -59,7 +59,6 @@ const Login = ({ setUser }) => {
     }
     
     if (isRegistering) {
-      // Check if all registration fields are filled
       if (!name || !email || !phone || !password) {
         alert("Please fill in all fields.");
         return;
@@ -67,44 +66,46 @@ const Login = ({ setUser }) => {
       const registrationSuccess = await registerUser(name, password, email, phone, photo);
       if (registrationSuccess) {
         alert("Registration successful! You are now logged in.");
-        setUser({ username: name, role: "user" }); // Use name as username
+        const userDetails = { username: name, email, phone, profilePhoto: photo, role: "user" };
+        setUser(userDetails);
+        localStorage.setItem("userDetails", JSON.stringify(userDetails)); // Store complete user details in local storage
         navigate("/user-dashboard");
       }
     } else {
-      // Check if login fields are filled
       if (!name || !password) {
         setErrors({ ...errors, form: "Please fill in both fields." });
         return;
       }
-      const result = await fetchUserRole(name, password);
-      if (result.role) {
-        setUser({ username: name, role: result.role });
-        if (result.role === "admin") {
+      const user = await fetchUserDetails(name, password);
+      if (user) {
+        setUser(user);
+        localStorage.setItem("userDetails", JSON.stringify(user)); // Store complete user details in local storage
+        if (user.role === "admin") {
           navigate("/dashboard");
         } else {
           navigate("/user-dashboard");
         }
       } else {
-        setErrors({ ...errors, form: result.error });
+        setErrors({ ...errors, form: "Invalid username or password." });
       }
     }
     setPassword(""); // Reset password field
   };
 
-  const fetchUserRole = async (username, password) => {
+  const fetchUserDetails = async (username, password) => {
     const response = await fetch("http://localhost:3001/users");
     const users = await response.json();
     const user = users.find(u => u.username === username);
 
     if (!user) {
-      return { error: "Username does not exist." };
+      return null;
     }
 
     if (user.password !== password) {
-      return { error: "Password does not match." };
+      return null;
     }
 
-    return { role: user.role };
+    return user; // Return the complete user object
   };
 
   const registerUser = async (name, password, email, phone, photo) => {
