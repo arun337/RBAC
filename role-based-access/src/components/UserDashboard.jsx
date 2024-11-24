@@ -7,6 +7,8 @@ const UserDashboard = ({ onLogout }) => {
   const [userDetails, setUserDetails] = useState(null);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('home');
+  const [books, setBooks] = useState([]);
+  const [selectedBookId, setSelectedBookId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -16,6 +18,11 @@ const UserDashboard = ({ onLogout }) => {
     } else {
       setError("No user details found in local storage");
     }
+
+    fetch("http://localhost:3001/books")
+      .then(response => response.json())
+      .then(data => setBooks(data))
+      .catch(error => console.error("Error fetching books:", error));
   }, []);
 
   const handleLogout = () => {
@@ -66,6 +73,46 @@ const UserDashboard = ({ onLogout }) => {
       });
   };
 
+  const checkOutBook = (bookId) => {
+    const book = books.find(b => b.id === bookId);
+    if (book.checkedOutBy) {
+      alert("This book is already checked out.");
+      return;
+    }
+    const checkedOutBy = { id: userDetails.id, username: userDetails.username };
+    fetch(`http://localhost:3001/books/${bookId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...book, checkedOutBy })
+    })
+    .then(response => response.json())
+    .then(updatedBook => {
+      setBooks(books.map(b => (b.id === updatedBook.id ? updatedBook : b)));
+      alert("Book checked out successfully!");
+    })
+    .catch(error => console.error("Error checking out book:", error));
+  };
+
+  const returnBook = (bookId) => {
+    const book = books.find(b => b.id === bookId);
+    if (book.checkedOutBy?.id !== userDetails.id) {
+      alert("You cannot return a book you haven't checked out.");
+      return;
+    }
+
+    fetch(`http://localhost:3001/books/${bookId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...book, checkedOutBy: null })
+    })
+    .then(response => response.json())
+    .then(updatedBook => {
+      setBooks(books.map(b => (b.id === updatedBook.id ? updatedBook : b)));
+      alert("Book returned successfully!");
+    })
+    .catch(error => console.error("Error returning book:", error));
+  };
+
   if (error) {
     return <div className="text-center text-red-500">{error}</div>;
   }
@@ -103,39 +150,54 @@ const UserDashboard = ({ onLogout }) => {
         <div className="bg-white rounded-lg shadow-lg p-6">
           {activeTab === 'home' && (
             <div>
-              <h3 className="text-xl font-bold mb-4">Home Content</h3>
-              <table className="min-w-full bg-white">
-                <thead>
-                  <tr>
-                    <th className="py-2">Profile</th>
-                    <th className="py-2">Username</th>
-                    <th className="py-2">Email</th>
-                    <th className="py-2">Phone</th>
-                    <th className="py-2">Role</th>
-                    <th className="py-2">Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="text-center">
-                    <td className="py-2">
-                      {userDetails.profilePhoto ? (
-                        <img
-                          src={userDetails.profilePhoto}
-                          alt={`${userDetails.username}'s profile`}
-                          className="w-10 h-10 rounded-full mx-auto"
-                        />
-                      ) : (
-                        <FaUserCircle size={40} className="text-gray-600 mx-auto" />
-                      )}
-                    </td>
-                    <td className="py-2">{userDetails.username}</td>
-                    <td className="py-2">{userDetails.email}</td>
-                    <td className="py-2">{userDetails.phone}</td>
-                    <td className="py-2">{userDetails.role}</td>
-                    <td className="py-2">{userDetails.status}</td>
-                  </tr>
-                </tbody>
-              </table>
+              <h3 className="text-xl font-bold mb-4">Available Books</h3>
+              <div className="flex flex-wrap gap-4">
+                {books
+                  .filter(book => !book.checkedOutBy || book.checkedOutBy.id === userDetails.id)
+                  .map(book => (
+                    <div
+                      key={book.id}
+                      className="bg-white p-2 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer w-48"
+                      onClick={() => setSelectedBookId(selectedBookId === book.id ? null : book.id)}
+                    >
+                      <img
+                        src={book.imageUrl}
+                        alt={book.title}
+                        className="w-full h-32 object-cover rounded-t-lg"
+                      />
+                      <div className="p-2">
+                        <h4 className="text-sm font-bold">{book.title}</h4>
+                        <p className="text-xs text-gray-600">by {book.author}</p>
+                        {selectedBookId === book.id && (
+                          <p className="text-xs text-gray-800 mt-2">{book.synopsis}</p>
+                        )}
+                        <div className="flex justify-between mt-2">
+                          {book.checkedOutBy?.id === userDetails.id ? (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                returnBook(book.id);
+                              }}
+                              className="bg-green-500 text-white text-xs p-1 rounded"
+                            >
+                              Return
+                            </button>
+                          ) : (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                checkOutBook(book.id);
+                              }}
+                              className="bg-blue-500 text-white text-xs p-1 rounded"
+                            >
+                              Check Out
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+              </div>
             </div>
           )}
           {activeTab === 'profile' && (

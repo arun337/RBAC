@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import UserManagement from './UserManagement';
 import RoleManagement from './RoleManagement';
+import Books from './Books';
+
 import Home from './Home';
 
 const Dashboard = ({ user, onLogout }) => {
@@ -45,6 +47,14 @@ const Dashboard = ({ user, onLogout }) => {
           </li>
           <li>
             <button
+              onClick={() => setActiveTab('books')}
+              className={`hover:text-gray-300 ${activeTab === 'books' ? 'text-gray-300' : ''}`}
+            >
+              Books
+            </button>
+          </li>
+          <li>
+            <button
               onClick={handleLogout}
               className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
             >
@@ -58,6 +68,7 @@ const Dashboard = ({ user, onLogout }) => {
         {activeTab === 'home' && <Home user={user} />}
         {activeTab === 'users' && <UserManagement />}
         {activeTab === 'roles' && <RoleManagement />}
+        {activeTab === 'books' && <Books />}
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "./components/login";
 import UserDashboard from "./components/UserDashboard";
 import Dashboard from "./components/dashboard";
-import UserHome from "./components/UserHome";
+
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -20,7 +20,7 @@ const App = () => {
         <Route path="/" element={<Login setUser={setUser} />} />
         <Route path="/dashboard" element={<Dashboard user={user} onLogout={handleLogout} />} />
         <Route path="/user-dashboard" element={<UserDashboard currentUser={user} onLogout={handleLogout} />} />
-        <Route path="/user-home" element={<UserHome currentUser={user} />} />
+        
       </Routes>
   
   );
