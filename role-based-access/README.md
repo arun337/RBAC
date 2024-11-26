@@ -46,7 +46,7 @@ This is a Library Management System built with React, allowing users to register
 
 5. Open your browser and navigate to `http://localhost:3001`.
 
-## File Structure
+
 
 
 ## API Endpoints
