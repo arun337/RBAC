@@ -9,6 +9,7 @@ const UserDashboard = ({ onLogout }) => {
   const [activeTab, setActiveTab] = useState('home');
   const [books, setBooks] = useState([]);
   const [selectedBookId, setSelectedBookId] = useState(null);
+  const [expandedBookId, setExpandedBookId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -151,34 +152,34 @@ const UserDashboard = ({ onLogout }) => {
           {activeTab === 'home' && (
             <div>
               <h3 className="text-xl font-bold mb-4">Available Books</h3>
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-wrap gap-6">
                 {books
                   .filter(book => !book.checkedOutBy || book.checkedOutBy.id === userDetails.id)
                   .map(book => (
                     <div
                       key={book.id}
-                      className="bg-white p-2 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer w-48"
-                      onClick={() => setSelectedBookId(selectedBookId === book.id ? null : book.id)}
+                      className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer w-full sm:w-72 md:w-80"
+                      onClick={() => setExpandedBookId(expandedBookId === book.id ? null : book.id)}
                     >
                       <img
-                        src={book.imageUrl}
+                        src={book.image}
                         alt={book.title}
-                        className="w-full h-32 object-cover rounded-t-lg"
+                        className="w-full h-48 object-cover rounded-t-lg"
                       />
-                      <div className="p-2">
-                        <h4 className="text-sm font-bold">{book.title}</h4>
-                        <p className="text-xs text-gray-600">by {book.author}</p>
-                        {selectedBookId === book.id && (
-                          <p className="text-xs text-gray-800 mt-2">{book.synopsis}</p>
+                      <div className="p-4">
+                        <h4 className="text-lg font-semibold text-gray-800">{book.title}</h4>
+                        <p className="text-sm text-gray-600">by {book.author}</p>
+                        {expandedBookId === book.id && (
+                          <p className="text-sm text-gray-700 mt-2">{book.description}</p>
                         )}
-                        <div className="flex justify-between mt-2">
+                        <div className="flex justify-between mt-4">
                           {book.checkedOutBy?.id === userDetails.id ? (
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
                                 returnBook(book.id);
                               }}
-                              className="bg-green-500 text-white text-xs p-1 rounded"
+                              className="bg-green-500 text-white text-sm font-semibold py-1 px-3 rounded transition duration-200 hover:bg-green-600"
                             >
                               Return
                             </button>
@@ -188,7 +189,7 @@ const UserDashboard = ({ onLogout }) => {
                                 e.stopPropagation();
                                 checkOutBook(book.id);
                               }}
-                              className="bg-blue-500 text-white text-xs p-1 rounded"
+                              className="bg-blue-500 text-white text-sm font-semibold py-1 px-3 rounded transition duration-200 hover:bg-blue-600"
                             >
                               Check Out
                             </button>

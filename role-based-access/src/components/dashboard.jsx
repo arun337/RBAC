@@ -1,4 +1,4 @@
-// src/components/Dashboard.jsx
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import UserManagement from './UserManagement';
@@ -12,8 +12,8 @@ const Dashboard = ({ user, onLogout }) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    onLogout(); // Clear user state
-    navigate('/'); // Redirect to login page
+    onLogout(); 
+    navigate('/');
   };
 
   return (

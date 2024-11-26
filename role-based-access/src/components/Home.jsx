@@ -16,6 +16,7 @@ const Home = ({ user }) => {
     });
     const [editingUser, setEditingUser] = useState(null);
     const [searchQuery, setSearchQuery] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
   
     useEffect(() => {
       fetch("http://localhost:3001/users")
@@ -69,6 +70,17 @@ const Home = ({ user }) => {
     };
   
     const saveUser = () => {
+      
+      const isNameTaken = users.some(user => user.username !== editingUser.username && user.name === editingUser.name);
+
+      if (isNameTaken) {
+        setErrorMessage("The name is already taken by another user.");
+        return;
+      }
+
+    
+      setErrorMessage("");
+
       fetch(`http://localhost:3001/users/${editingUser.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -188,6 +200,7 @@ const Home = ({ user }) => {
                           <option value="active">Active</option>
                           <option value="inactive">Inactive</option>
                         </select>
+                        <p className="text-red-500">{errorMessage}</p>
                         <div>
                           <button onClick={saveUser} className="bg-green-500 text-white p-2 rounded mr-2">Save</button>
                           <button onClick={cancelEditing} className="bg-gray-500 text-white p-2 rounded">Cancel</button>

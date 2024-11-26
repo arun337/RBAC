@@ -84,7 +84,7 @@ const Books = () => {
             <table className="min-w-full bg-white shadow-md rounded-lg">
               <thead>
                 <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-                  <th className="py-3 px-6 text-left">ID</th>
+                  <th className="py-3 px-6 text-left">#</th>
                   <th className="py-3 px-6 text-left">Title</th>
                   <th className="py-3 px-6 text-left">Author</th>
                   <th className="py-3 px-6 text-left">Checked Out By</th>
@@ -93,7 +93,7 @@ const Books = () => {
               <tbody className="text-gray-700 text-sm font-light">
                 {books.map((book, index) => (
                   <tr key={book.id} className={`border-b border-gray-200 hover:bg-gray-100 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
-                    <td className="py-3 px-6 text-left">{book.id}</td>
+                    <td className="py-3 px-6 text-left">{index + 1}</td>
                     <td className="py-3 px-6 text-left">{book.title}</td>
                     <td className="py-3 px-6 text-left">{book.author}</td>
                     <td className="py-3 px-6 text-left">

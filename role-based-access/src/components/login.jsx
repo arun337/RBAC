@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+
 const Login = ({ setUser }) => {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -82,6 +83,8 @@ const Login = ({ setUser }) => {
         localStorage.setItem("userDetails", JSON.stringify(user)); // Store complete user details in local storage
         if (user.role === "admin") {
           navigate("/dashboard");
+        } else if (user.role === "author") {
+          navigate("/authormanagement");
         } else {
           navigate("/user-dashboard");
         }
@@ -134,7 +137,7 @@ const Login = ({ setUser }) => {
       email,
       phone,
       profilePhoto, // Use base64 string for photo
-      role: "user", // Default role for new users
+      role: "author", // Set role to author for new users
       status: "active", // Set initial status to active
     };
 
@@ -164,8 +167,18 @@ const Login = ({ setUser }) => {
     }
   };
 
+  const saveBook = async (book) => {
+    const response = await fetch("http://localhost:3001/books", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(book),
+    });
+
+    return response.ok; // Return true if saving was successful
+  };
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 bg-login">
       <div className="w-full max-w-sm p-6 bg-white rounded-lg shadow-lg">
         <h2 className="text-xl font-bold text-center mb-4 text-gray-700">
           {isRegistering ? "Register" : "Login"}

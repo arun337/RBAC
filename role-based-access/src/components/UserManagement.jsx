@@ -9,13 +9,14 @@ const UserManagement = () => {
     username: "",
     role: "user",
     status: "active",
-    name: "",
+
     email: "",
     phone: "",
     profilePhoto: "",
-    age: ""
+ 
   });
   const [editingUser, setEditingUser] = useState(null);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     fetch("http://localhost:3001/users")
@@ -44,7 +45,53 @@ const UserManagement = () => {
     }
   };
 
+  const validateUser = () => {
+    const { username, email, phone, password, age } = newUser;
+    
+    const newErrors = {};
+
+    // Validate username
+    if (!username) {
+      newErrors.username = "Username is required.";
+    } else if (users.some(user => user.username === username)) {
+      newErrors.username = "This username is already taken.";
+    } else if (username.length < 3) {
+      newErrors.username = "Username must be at least 3 characters long.";
+    }
+
+    // Validate email
+    if (!email) {
+      newErrors.email = "Email is required.";
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      newErrors.email = "A valid email is required.";
+    }
+
+    // Validate phone
+    if (!phone) {
+      newErrors.phone = "Phone number is required.";
+    } else if (!/^\d{10}$/.test(phone)) {
+      newErrors.phone = "A valid 10-digit phone number is required.";
+    }
+
+    // Validate password
+    if (!password) {
+      newErrors.password = "Password is required.";
+    } else if (password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters long.";
+    }
+
+    // Validate age
+    if (age && (isNaN(age) || age < 0)) {
+      newErrors.age = "Age must be a positive number.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const addUser = () => {
+    if (!validateUser()) return;
+
     const newUserId = (users.length + 1).toString();
     fetch("http://localhost:3001/users", {
       method: "POST",
@@ -74,7 +121,48 @@ const UserManagement = () => {
     setEditingUser(null);
   };
 
+  const validateEditingUser = () => {
+    const { username, email, phone, password } = editingUser;
+    
+    const newErrors = {};
+
+    // Validate username
+    if (!username) {
+      newErrors.username = "Username is required.";
+    } else if (users.some(user => user.username === username && user.id !== editingUser.id)) {
+      newErrors.username = "This username is already taken.";
+    } else if (username.length < 3) {
+      newErrors.username = "Username must be at least 3 characters long.";
+    }
+
+    // Validate email
+    if (!email) {
+      newErrors.email = "Email is required.";
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      newErrors.email = "A valid email is required.";
+    }
+
+    // Validate phone
+    if (!phone) {
+      newErrors.phone = "Phone number is required.";
+    } else if (!/^\d{10}$/.test(phone)) {
+      newErrors.phone = "A valid 10-digit phone number is required.";
+    }
+
+    // Validate password
+    if (!password) {
+      newErrors.password = "Password is required.";
+    } else if (password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters long.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const saveUser = () => {
+    if (!validateEditingUser()) return;
+
     fetch(`http://localhost:3001/users/${editingUser.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
@@ -99,6 +187,7 @@ const UserManagement = () => {
           onChange={(e) => setNewUser({ ...newUser, username: e.target.value })}
           className="border p-2 rounded flex-grow"
         />
+        {errors.username && <span className="text-red-500">{errors.username}</span>}
         <select
           value={newUser.role}
           onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
@@ -108,6 +197,7 @@ const UserManagement = () => {
             <option key={role.id} value={role.name}>{role.name}</option>
           ))}
         </select>
+        {errors.email && <span className="text-red-500">{errors.email}</span>}
         <input
           type="email"
           placeholder="Email"
@@ -115,6 +205,7 @@ const UserManagement = () => {
           onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
           className="border p-2 rounded flex-grow"
         />
+        {errors.phone && <span className="text-red-500">{errors.phone}</span>}
         <input
           type="text"
           placeholder="Phone Number"
@@ -127,11 +218,12 @@ const UserManagement = () => {
           onChange={(e) => handleFileChange(e)}
           className="border p-2 rounded"
         />
+        {errors.password && <span className="text-red-500">{errors.password}</span>}
         <input
-          type="number"
-          placeholder="Age"
-          value={newUser.age}
-          onChange={(e) => setNewUser({ ...newUser, age: e.target.value })}
+          type="password"
+          placeholder="Password"
+          value={newUser.password}
+          onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
           className="border p-2 rounded"
         />
         <button onClick={addUser} className="bg-blue-500 text-white p-2 rounded">
@@ -178,6 +270,7 @@ const UserManagement = () => {
             onChange={(e) => setEditingUser({ ...editingUser, username: e.target.value })}
             className="border p-2 rounded mb-2"
           />
+          {errors.username && <span className="text-red-500">{errors.username}</span>}
           <select
             value={editingUser.role}
             onChange={(e) => setEditingUser({ ...editingUser, role: e.target.value })}
@@ -193,23 +286,26 @@ const UserManagement = () => {
             onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })}
             className="border p-2 rounded mb-2"
           />
+          {errors.email && <span className="text-red-500">{errors.email}</span>}
           <input
             type="text"
             value={editingUser.phone}
             onChange={(e) => setEditingUser({ ...editingUser, phone: e.target.value })}
             className="border p-2 rounded mb-2"
           />
+          {errors.phone && <span className="text-red-500">{errors.phone}</span>}
           <input
             type="file"
             onChange={(e) => handleFileChange(e, true)}
             className="border p-2 rounded mb-2"
           />
           <input
-            type="number"
-            value={editingUser.age}
-            onChange={(e) => setEditingUser({ ...editingUser, age: e.target.value })}
+            type="password"
+            value={editingUser.password}
+            onChange={(e) => setEditingUser({ ...editingUser, password: e.target.value })}
             className="border p-2 rounded mb-2"
           />
+          {errors.password && <span className="text-red-500">{errors.password}</span>}
           <select
             value={editingUser.status}
             onChange={(e) => setEditingUser({ ...editingUser, status: e.target.value })}
