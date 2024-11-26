@@ -1,4 +1,4 @@
-// src/components/Login.jsx
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -69,7 +69,7 @@ const Login = ({ setUser }) => {
         alert("Registration successful! You are now logged in.");
         const userDetails = { username: name, email, phone, profilePhoto: photo, role: "user" };
         setUser(userDetails);
-        localStorage.setItem("userDetails", JSON.stringify(userDetails)); // Store complete user details in local storage
+        localStorage.setItem("userDetails", JSON.stringify(userDetails)); 
         navigate("/user-dashboard");
       }
     } else {
@@ -80,7 +80,7 @@ const Login = ({ setUser }) => {
       const user = await fetchUserDetails(name, password);
       if (user) {
         setUser(user);
-        localStorage.setItem("userDetails", JSON.stringify(user)); // Store complete user details in local storage
+        localStorage.setItem("userDetails", JSON.stringify(user)); 
         if (user.role === "admin") {
           navigate("/dashboard");
         } else if (user.role === "author") {
@@ -92,7 +92,7 @@ const Login = ({ setUser }) => {
         setErrors({ ...errors, form: "Invalid username or password." });
       }
     }
-    setPassword(""); // Reset password field
+    setPassword(""); 
   };
 
   const fetchUserDetails = async (username, password) => {
@@ -108,7 +108,7 @@ const Login = ({ setUser }) => {
       return null;
     }
 
-    return user; // Return the complete user object
+    return user; 
   };
 
   const registerUser = async (name, password, email, phone, photo) => {
@@ -132,13 +132,13 @@ const Login = ({ setUser }) => {
     }
 
     const newUser = {
-      username: name, // Use name as username
+      username: name, 
       password,
       email,
       phone,
-      profilePhoto, // Use base64 string for photo
-      role: "author", // Set role to author for new users
-      status: "active", // Set initial status to active
+      profilePhoto, 
+      role: "author", 
+      status: "active", 
     };
 
     const response = await fetch("http://localhost:3001/users", {
@@ -147,7 +147,7 @@ const Login = ({ setUser }) => {
       body: JSON.stringify(newUser),
     });
 
-    return response.ok; // Return true if registration was successful
+    return response.ok; 
   };
 
   const resetFields = () => {
@@ -157,7 +157,7 @@ const Login = ({ setUser }) => {
     setPhone("");
     setPhoto("");
     setPassword("");
-    setErrors({ name: "", password: "", email: "", phone: "", form: "" }); // Reset errors as well
+    setErrors({ name: "", password: "", email: "", phone: "", form: "" }); 
   };
 
   const handleFileChange = (e) => {
@@ -174,7 +174,7 @@ const Login = ({ setUser }) => {
       body: JSON.stringify(book),
     });
 
-    return response.ok; // Return true if saving was successful
+    return response.ok; 
   };
 
   return (
@@ -196,7 +196,7 @@ const Login = ({ setUser }) => {
                   value={name}
                   onChange={(e) => {
                     setName(e.target.value);
-                    setErrors({ ...errors, name: "" }); // Clear error on change
+                    setErrors({ ...errors, name: "" }); 
                   }}
                   className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
@@ -213,7 +213,7 @@ const Login = ({ setUser }) => {
                   value={email}
                   onChange={(e) => {
                     setEmail(e.target.value);
-                    setErrors({ ...errors, email: "" }); // Clear error on change
+                    setErrors({ ...errors, email: "" }); 
                   }}
                   className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
@@ -230,7 +230,7 @@ const Login = ({ setUser }) => {
                   value={phone}
                   onChange={(e) => {
                     setPhone(e.target.value);
-                    setErrors({ ...errors, phone: "" }); // Clear error on change
+                    setErrors({ ...errors, phone: "" }); 
                   }}
                   className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
@@ -258,7 +258,7 @@ const Login = ({ setUser }) => {
                   value={password}
                   onChange={(e) => {
                     setPassword(e.target.value);
-                    setErrors({ ...errors, password: "" }); // Clear error on change
+                    setErrors({ ...errors, password: "" }); 
                   }}
                   className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
@@ -285,7 +285,7 @@ const Login = ({ setUser }) => {
                   value={name}
                   onChange={(e) => {
                     setName(e.target.value);
-                    setErrors({ ...errors, name: "" }); // Clear error on change
+                    setErrors({ ...errors, name: "" }); 
                   }}
                   className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
@@ -302,7 +302,7 @@ const Login = ({ setUser }) => {
                   value={password}
                   onChange={(e) => {
                     setPassword(e.target.value);
-                    setErrors({ ...errors, password: "" }); // Clear error on change
+                    setErrors({ ...errors, password: "" }); 
                   }}
                   className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
@@ -322,7 +322,7 @@ const Login = ({ setUser }) => {
         <button
           onClick={() => {
             setIsRegistering(!isRegistering);
-            resetFields(); // Reset all fields when toggling between login and registration
+            resetFields(); 
           }}
           className="w-full mt-3 text-blue-500 hover:underline"
         >

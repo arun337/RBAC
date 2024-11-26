@@ -50,7 +50,7 @@ const UserManagement = () => {
     
     const newErrors = {};
 
-    // Validate username
+
     if (!username) {
       newErrors.username = "Username is required.";
     } else if (users.some(user => user.username === username)) {
@@ -59,28 +59,27 @@ const UserManagement = () => {
       newErrors.username = "Username must be at least 3 characters long.";
     }
 
-    // Validate email
     if (!email) {
       newErrors.email = "Email is required.";
     } else if (!/\S+@\S+\.\S+/.test(email)) {
       newErrors.email = "A valid email is required.";
     }
 
-    // Validate phone
+
     if (!phone) {
       newErrors.phone = "Phone number is required.";
     } else if (!/^\d{10}$/.test(phone)) {
       newErrors.phone = "A valid 10-digit phone number is required.";
     }
 
-    // Validate password
+  
     if (!password) {
       newErrors.password = "Password is required.";
     } else if (password.length < 6) {
       newErrors.password = "Password must be at least 6 characters long.";
     }
 
-    // Validate age
+
     if (age && (isNaN(age) || age < 0)) {
       newErrors.age = "Age must be a positive number.";
     }
@@ -126,7 +125,7 @@ const UserManagement = () => {
     
     const newErrors = {};
 
-    // Validate username
+   
     if (!username) {
       newErrors.username = "Username is required.";
     } else if (users.some(user => user.username === username && user.id !== editingUser.id)) {

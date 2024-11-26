@@ -15,7 +15,7 @@ const AuthorManagement = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch existing books when the component mounts
+    
     const fetchBooks = async () => {
       const response = await fetch('http://localhost:3001/books');
       const data = await response.json();
@@ -160,7 +160,7 @@ const AuthorManagement = () => {
               <div
                 className={`mt-2 text-gray-700 cursor-pointer transition-all duration-300 ${expandedDescriptionId === b.id ? 'max-h-96' : 'max-h-12 overflow-hidden'}`}
                 onClick={() => handleDescriptionClick(b.id)}
-                // style={{ display: 'block' }}
+                
               >
                 {b.description}
               </div>

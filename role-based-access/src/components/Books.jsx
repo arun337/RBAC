@@ -58,7 +58,7 @@ const Books = () => {
 
       try {
         const response = await fetch(`http://localhost:3001/users/${selectedUser.id}`, {
-          method: 'PATCH', // or 'PUT' depending on your API
+          method: 'PATCH', 
           headers: {
             'Content-Type': 'application/json',
           },
@@ -69,9 +69,9 @@ const Books = () => {
           throw new Error('Failed to update user status');
         }
 
-        // Update the users state to reflect the change
+       
         setUsers(users.map(user => user.id === selectedUser.id ? { ...user, status: newStatus } : user));
-        closeModal(); // Close the modal after saving
+        closeModal(); 
       } catch (error) {
         console.error('Error updating user status:', error);
       }
