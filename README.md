@@ -3,6 +3,8 @@
 ## Overview
 This is a Library Management System built with React, allowing users to register, log in, manage their profiles, and check out books. Admins can manage users, roles, and books through an admin dashboard.
 
+username:admin
+passworde:
 ## Features
 - User registration and login
 - Profile management (update user details and profile photo)
